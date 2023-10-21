@@ -1,13 +1,14 @@
 from rest_framework import serializers
-from inmuebleslist_app.models import Edificacion, Empresa
+from inmuebleslist_app.models import Edificacion, Empresa, Comentario
 
 
-class EmpresaSerializer(serializers.ModelSerializer):
+class ComentarioSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Empresa
-        fields = '__all__'
+        model = Comentario
+        fields = "__all__"
 
 class EdificacionSerializer(serializers.ModelSerializer):
+    comentarios = ComentarioSerializer(many=True, read_only=True)
     class Meta: #Mapea automaticamente los datos
         model = Edificacion
         fields = "__all__" #mostrar todos los campos
@@ -16,6 +17,15 @@ class EdificacionSerializer(serializers.ModelSerializer):
         
         
         
+class EmpresaSerializer(serializers.HyperlinkedModelSerializer):
+    edificacionlist = EdificacionSerializer(many=True, read_only=True)
+    #edificacionlist = serializers.StringRelatedField(many=True)
+    #edificacionlist = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
+    #edificacionlist = serializers.HyperlinkedRelatedField(many=True, read_only=True, view_name = 'edificacion-detalle')
+    class Meta:
+        model = Empresa
+        fields = '__all__'
+
         
         
         
